@@ -6,7 +6,12 @@
 // Description : Hello World in C++, Ansi-style
 //============================================================================
 
+#include <vector>
+#include <sstream>
+#include <fstream>
+#include <map>
 #include <iostream>
+
 using namespace std;
 
 class LexAnalyzer{
@@ -16,11 +21,29 @@ private:
 	map <string, string> tokenmap;
 
 public:
-	LexAnalyzer(istream& infile);
+	LexAnalyzer(istream& infile){
+		if(!infile){
+			cout << "could not open the file " << infile << endl;
+			exit(-1);
+		}
+		string s;
+		vector<string> temp;
+		while(getline(infile, s)){
+			istringstream ip(s);
+			do{
+				string word;
+				ip >> word;
+				temp.push_back(word);
+			}while(ip);
+			cout << temp.at(0) << " " << temp.at(1) << endl;
+			tokenmap.insert(pair<string, string>(temp.at(1), temp.at(0)));
+			temp.clear();
+		}
+	}
 
 	void scanFile(istream& infile, ostream& outfile){
 		if(!infile){
-			cout << "could not open the file" << endl;
+			cout << "could not open the file " << infile <<  endl;
 			exit(-1);
 		}
 		int i = 0;
@@ -38,5 +61,9 @@ public:
 
 int main() {
 	cout << "Hello World" << endl; // prints Hello World
+	ifstream infile("tokenlexemedata.txt");
+	LexAnalyzer e(infile);
+
+
 	return 0;
 }
